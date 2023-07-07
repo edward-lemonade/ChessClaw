@@ -1,8 +1,10 @@
-from cv2 import VideoCapture, imshow, waitKey, resize, destroyAllWindows
+from cv2 import VideoCapture, imshow, waitKey, resize, destroyAllWindows, CAP_DSHOW, CAP_PROP_FRAME_WIDTH, CAP_PROP_FRAME_HEIGHT
 from keras.applications.vgg16 import VGG16, decode_predictions
 
 def iCap(cam = 1):
-    cap = VideoCapture(cam)
+    cap = VideoCapture(cam, CAP_DSHOW)
+    cap.set(CAP_PROP_FRAME_HEIGHT, 4000)
+    cap.set(CAP_PROP_FRAME_WIDTH, 4000)
     try:
         while True:
             success, frame = cap.read()
