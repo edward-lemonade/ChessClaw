@@ -1,5 +1,5 @@
 from cv2 import VideoCapture, imshow, waitKey, resize, destroyAllWindows
-from tensorflow.keras.applications.vgg16 import VGG16, decode_predictions
+from keras.applications.vgg16 import VGG16, decode_predictions
 
 def iCap(cam = 1):
     cap = VideoCapture(cam)
