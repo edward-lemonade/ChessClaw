@@ -9,13 +9,12 @@ ML = 100
 MG = 10
 SM = 0.33
 BL = 5
-SKIP = 3
 
 def showLines(frame):
-    global TR, RR, SM, BL, ML, MG, SKIP
+    global TR, RR, SM, BL, ML, MG
     image, edges = CannyEdges(frame, sigma=SM, blur=BL)
     lines = HoughLine(edges, thetaRes=TR, rhoRes=RR, minLen=ML, maxGap=MG)
-    h, v = GridDetection(lines, skip = SKIP)
+    h, v = GridDetection(lines)
 
     for r, t in v + h:
         a, b = math.cos(t), math.sin(t)
@@ -26,12 +25,12 @@ def showLines(frame):
 
     cv2.putText(frame, f"thetaRes: {TR} (w/s), rhoRes: {RR} (a/d)", (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (64, 77, 255), 2, 2)
     cv2.putText(frame, f"minLength: {ML} ([/]), maxGap: {MG} (j/k)", (0, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (64, 77, 255), 2, 2)
-    cv2.putText(frame, f"sigma: {SM} (</>), blur: {BL} (+/-), skip: {SKIP} (n/m)", (0, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (64, 77, 255), 2, 2)
+    cv2.putText(frame, f"sigma: {SM} (</>), blur: {BL} (+/-)", (0, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (64, 77, 255), 2, 2)
 
     return frame
 
 def updateHoughLineParams(k):
-    global TR, RR, SM, BL, ML, MG, SKIP
+    global TR, RR, SM, BL, ML, MG
     if k & 0xFF == ord('w'):
         TR = TR + 1
     elif k & 0xFF == ord('s'):
@@ -56,16 +55,12 @@ def updateHoughLineParams(k):
         MG = MG - 1
     elif k & 0xFF == ord('k'):
         MG = MG + 1
-    elif k & 0xFF == ord('n'):
-        SKIP = SKIP - 1
-    elif k & 0xFF == ord('m'):
-        SKIP = SKIP + 1
 
 pic = iCap(render=showLines, interval=5, change=updateHoughLineParams)
 image, edges = CannyEdges(pic, sigma=SM, blur=BL)
 lines = HoughLine(edges, thetaRes=TR, rhoRes=RR, minLen=ML, maxGap=MG)
 # print(lines)
-h, v = GridDetection(lines, skip = SKIP)
+h, v = GridDetection(lines)
 # print(h)
 # print(v)
 points = Intersections(h, v)

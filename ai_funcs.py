@@ -61,7 +61,7 @@ def HoughLine(edges, thetaRes = 6, rhoRes = 125, minLen=100, maxGap=10):
     lines = reshape(lines, (-1, 2))
     return lines
 
-def GridDetection(lines, skip = 3):
+def GridDetection(lines):
     h, v = [], []
     for r, t in lines:
         if t < pi / 4 or t > pi - pi / 4:
@@ -69,12 +69,6 @@ def GridDetection(lines, skip = 3):
         else:
             h.append([r, t])
  
-    ht = array(h).mean(axis=0)[1]
-    h = list(filter(lambda l: (abs(l[1] - ht) * 100 / ht < skip), h))
-
-    vt = array(v).mean(axis=0)[1]
-    v = list(filter(lambda l: (abs(l[1] - vt) * 100 / vt < skip), v))
-
     return h, v
 
 def Intersections(h, v):
