@@ -1,9 +1,12 @@
 import cv2
 from keras.applications.vgg16 import VGG16, decode_predictions
-from numpy import median, pi, reshape, array, linalg
+from numpy import median, pi, reshape, array, linalg, mean, shape
 import math
+import scipy.spatial as spatial
+import scipy.cluster as cluster
+from collections import defaultdict
 
-def iCap(cam = 1):
+def iCap(render = None, cam = 1, interval = 10, change = None):
     cap = cv2.VideoCapture(cam, cv2.CAP_DSHOW)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 4000)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 4000)
@@ -12,9 +15,21 @@ def iCap(cam = 1):
             success, frame = cap.read()
             if not success:
                 raise Exception(f"failed to read frame from camera {cam}")
-            cv2.imshow("frame", frame)
-            if cv2.waitKey(1) & 0xFF == ord(' '):
+
+            if render:
+                # try:
+                    rendered = render(frame.copy())
+                #except:
+                #    rendered = frame
+            else:
+                rendered = frame
+            cv2.imshow("frame", rendered)
+
+            k = cv2.waitKey(interval)
+            if k & 0xFF == ord(' '):
                 break
+            if k and change:
+                change(k)
 
         return frame
     finally:
@@ -30,10 +45,10 @@ def predict(frame):
 
     return label
 
-def CannyEdges(frame, sigma=0.33):
+def CannyEdges(frame, sigma=0.33, blur=5):
     # step 1 gray blur to reduce noise
     image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    image = cv2.blur(image, (5,5))
+    image = cv2.blur(image, (blur,blur))
 
     # step 2 gradient calculation
     gradient = median(image)
@@ -41,18 +56,24 @@ def CannyEdges(frame, sigma=0.33):
     upper = int(min(255, (1.0 + sigma) * gradient))
     return image, cv2.Canny(image, lower, upper)
 
-def HoughLine(edges, minHeight=100, maxGap=10):
-    lines = cv2.HoughLines(edges, 1, pi / 180, 125, minHeight, maxGap)
+def HoughLine(edges, thetaRes = 6, rhoRes = 125, minLen=100, maxGap=10):
+    lines = cv2.HoughLines(edges, rhoRes, thetaRes * pi / 180, minLen, maxGap)
     lines = reshape(lines, (-1, 2))
     return lines
 
-def GridDetection(lines):
+def GridDetection(lines, skip = 3):
     h, v = [], []
     for r, t in lines:
         if t < pi / 4 or t > pi - pi / 4:
             v.append([r, t])
         else:
             h.append([r, t])
+ 
+    ht = array(h).mean(axis=0)[1]
+    h = list(filter(lambda l: (abs(l[1] - ht) * 100 / ht < skip), h))
+
+    vt = array(v).mean(axis=0)[1]
+    v = list(filter(lambda l: (abs(l[1] - vt) * 100 / vt < skip), v))
 
     return h, v
 
@@ -65,3 +86,34 @@ def Intersections(h, v):
             x, y = linalg.solve(a,b)
             points.append((int(x),int(y)))
     return points
+
+def ClusterPoints(p):
+    dists = spatial.distance.pdist(p)
+    s = cluster.hierarchy.single(dists)
+    f = cluster.hierarchy.fcluster(s, 15, 'distance')
+    cld = defaultdict(list)
+    for i in range(len(f)):
+        cld[f[i]].append(p[i])
+    clv = cld.values()
+    cls = map(lambda arr: (int(mean(array(arr)[:,0])), int(mean(array(arr)[:,1]))), clv)
+    return sorted(list(cls), key = lambda k: [k[1], k[0]])
+
+def augment_points(points):
+    points_shape = list(shape(points))
+    augmented_points = []
+    for row in range(int(points_shape[0] / 11)):
+        start = row * 11
+        end = (row * 11) + 10
+        rw_points = points[start:end + 1]
+        rw_y = []
+        rw_x = []
+        for point in rw_points:
+            x, y = point
+            rw_y.append(y)
+            rw_x.append(x)
+        y_mean = mean(rw_y)
+        for i in range(len(rw_x)):
+            point = (int(rw_x[i]), int(y_mean))
+            augmented_points.append(point)
+    augmented_points = sorted(augmented_points, key=lambda k: [k[1], k[0]])
+    return augmented_points
