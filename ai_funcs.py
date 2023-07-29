@@ -17,10 +17,10 @@ def iCap(render = None, cam = 1, interval = 10, change = None):
                 raise Exception(f"failed to read frame from camera {cam}")
 
             if render:
-                # try:
+                try:
                     rendered = render(frame.copy())
-                #except:
-                #    rendered = frame
+                except:
+                    rendered = frame
             else:
                 rendered = frame
             cv2.imshow("frame", rendered)
@@ -56,7 +56,7 @@ def CannyEdges(frame, sigma=0.33, blur=5):
     upper = int(min(255, (1.0 + sigma) * gradient))
     return image, cv2.Canny(image, lower, upper)
 
-def HoughLine(edges, thetaRes = 6, rhoRes = 125, minLen=100, maxGap=10):
+def HoughLine(edges, thetaRes = 1, rhoRes = 1, minLen=140, maxGap=10):
     lines = cv2.HoughLines(edges, rhoRes, thetaRes * pi / 180, minLen, maxGap)
     lines = reshape(lines, (-1, 2))
     return lines

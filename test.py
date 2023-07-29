@@ -3,9 +3,9 @@ import cv2
 import numpy
 import math
 
-TR = 5
+TR = 1
 RR = 1
-ML = 100
+ML = 140
 MG = 10
 SM = 0.33
 BL = 5
@@ -67,7 +67,7 @@ points = Intersections(h, v)
 # print(points)
 
 points = ClusterPoints(points)
-# points = augment_points(points)
+points = augment_points(points)
 
 for x, y in points:
     cv2.circle(image, (x,y), radius=5, color=(0,0,255), thickness=-1)
