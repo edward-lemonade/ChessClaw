@@ -1,10 +1,11 @@
 import cv2
 from keras.applications.vgg16 import VGG16, decode_predictions
-from numpy import median, pi, reshape, array, linalg, mean, shape
+from numpy import median, pi, reshape, array, linalg, mean, shape, empty, vstack
 import math
 import scipy.spatial as spatial
 import scipy.cluster as cluster
 from collections import defaultdict
+import ckwrap
 
 def iCap(render = None, cam = 1, interval = 10, change = None):
     cap = cv2.VideoCapture(cam, cv2.CAP_DSHOW)
@@ -111,3 +112,22 @@ def augment_points(points):
             augmented_points.append(point)
     augmented_points = sorted(augmented_points, key=lambda k: [k[1], k[0]])
     return augmented_points
+
+def FitToGrid(points):
+    rowLabels = ckwrap.ckmeans(points.T[1], 11).labels
+    rows = [ empty([0, 2]) for i in range(11) ]
+    for i in range(len(points)):
+        rows[rowLabels[i]] = vstack([rows[rowLabels[i]], points[i]])
+
+    clusterLabels = list(map(lambda r: ckwrap.ckmeans(r.T[0], 11).labels, rows))
+    clusters = [ [ empty([0, 2]) for i in range(11) ] for j in range(11) ]
+    for i in range(11):
+        for j in range(len(rows[i])):
+            clusters[i][clusterLabels[i][j]] = vstack([clusters[i][clusterLabels[i][j]], rows[i][j]])
+
+    grid = empty([11, 11, 2])
+    for i in range(11):
+        for j in range(11):
+            grid[i][j] = clusters[i][j].mean(axis=0)
+
+    return grid
