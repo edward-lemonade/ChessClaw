@@ -38,28 +38,33 @@ challenges. Some of them are captured below.
 
 ### Components
 
+**Notes**:
+
+Pivoted from using **scipy.cluster.hierachy** to 2 level **1D k-means** of
+**fixed** number grouping. It is simplified that the result directly form the
+board grid. The end result is very good.
+
  * Visual intake: use opencv-python library
  * Board detection:
    * use canny-edge and hughline algorithm to find the potential grid lines
    * calculate all the intersections
-   * cluster the intersections using scipy.cluster.hierarchy
-   * further group the groups into rows and columns
-   * choose the average of the coordinates from each group
-   * find the grid based on the consolidated intersections
+   * use 1d k-means to group the intersections into 11 rows
+   * for each role use 1d k-means to group the intersections into 11 columns
+   * the average of the group coordinates form rows and columns of the grid
  * Chess piece recognition - TBD
 
 ### Test
 
 ```
 python3 -m venv .
-.\Scripts\Activate.ps1
+.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 python test.py
 ```
-You can follow the prompt in the capturing screen to adjust the parameters with hot keys such as
-w/s for changing theta ratio, [] for minLen etc.
+You can follow the prompt in the capturing screen to adjust the parameters with
+hot keys such as w/s for changing theta ratio, [] for minLen etc.
 
-![Canny Edge Sample][2] ![hugh_line][3] ![consolidated dots][4]
+![Canny Edge Sample][2] ![hugh_line][3] ![K-Means Gird][4]
 
 ### My setup
 ![My setup][1]
@@ -67,4 +72,4 @@ w/s for changing theta ratio, [] for minLen etc.
 [1]: images/my_setup.jpg "My Setup"
 [2]: images/sample_canny_edge.jpg
 [3]: images/hough_line.jpg
-[4]: images/consolidated_dots.jpg
+[4]: images/k-mean-grid.jpg
