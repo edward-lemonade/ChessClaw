@@ -13,13 +13,14 @@ def iCap(render = None, cam = 1, interval = 10, change = None):
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 4000)
     try:
         while True:
+            ret = None
             success, frame = cap.read()
             if not success:
                 raise Exception(f"failed to read frame from camera {cam}")
 
             if render:
                 try:
-                    rendered = render(frame.copy())
+                    ret, rendered = render(frame.copy())
                 except:
                     rendered = frame
             else:
@@ -27,12 +28,14 @@ def iCap(render = None, cam = 1, interval = 10, change = None):
             cv2.imshow("frame", rendered)
 
             k = cv2.waitKey(interval)
-            if k & 0xFF == ord(' '):
+            if k & 0xFF == ord(' ') and ret is not None:
                 break
+            elif k & 0xFF == ord('q'):
+                return None, None
             if k and change:
                 change(k)
 
-        return frame
+        return ret, frame
     finally:
         cv2.destroyAllWindows()
         cap.release()
@@ -62,7 +65,7 @@ def HoughLine(edges, thetaRes = 1, rhoRes = 1, minLen=140, maxGap=10):
     lines = reshape(lines, (-1, 2))
     return lines
 
-def GridDetection(lines):
+def GridLines(lines):
     h, v = [], []
     for r, t in lines:
         if t < pi / 4 or t > pi - pi / 4:
