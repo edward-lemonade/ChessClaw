@@ -51,9 +51,13 @@ board grid. The end result is very good.
    * use 1d k-means to group the intersections into 11 rows
    * for each role use 1d k-means to group the intersections into 11 columns
    * the average of the group coordinates form rows and columns of the grid
- * Chess piece recognition - TBD
+ * Chess piece recognition - Fine tune pre-trained VGG16
+   * VGG16 is a pre-trained neural network model does image labeling
+   * We need to fine-tune the model to recognize each piece and blank spaces
+   * Modifying test.py to generate dataset for training
+   * Once board is detected, each cell is cropped out from the image and manually labeled
 
-### Test
+### Test and dataset capture
 
 ```
 python3 -m venv .
@@ -62,7 +66,9 @@ pip install -r requirements.txt
 python test.py
 ```
 You can follow the prompt in the capturing screen to adjust the parameters with
-hot keys such as w/s for changing theta ratio, [] for minLen etc.
+hot keys such as w/s for changing theta ratio, [] for minLen etc. Press
+**space** to capture the frame and start cropping images for each cell. Repeat
+until **q** is pressed.
 
 ![Canny Edge Sample][2] ![hugh_line][3] ![K-Means Gird][4]
 
