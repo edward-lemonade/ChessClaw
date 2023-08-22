@@ -16,7 +16,8 @@ while not escape:
 
     name = ""
     submitted = False
-    while not submitted and not escape:
+    skipped = False
+    while not submitted and not escape and not skipped:
         size = image.shape
         displayed = cv2.resize(image, (size[1] * 3, size[0] * 3))
         cv2.putText(displayed, f'>{name}_', (3,20), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (64,77,255), 2, 2)
@@ -31,9 +32,12 @@ while not escape:
             submitted = True
         elif c==27:
             escape = True
+        elif c==9:
+            skipped = True
 
     if not escape:
-        with open("processed.csv", "a") as prf:
-            prf.write(f'"{nextImage}","{name}"\n')
+        if not skipped:
+            with open("processed.csv", "a") as prf:
+                prf.write(f'"{nextImage}","{name}"\n')
         with open("classified.txt", "w") as pf:
             pf.write(f"{ptr}")
