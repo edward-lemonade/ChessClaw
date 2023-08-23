@@ -85,37 +85,6 @@ def Intersections(h, v):
             points.append((int(x),int(y)))
     return points
 
-def ClusterPoints(p):
-    dists = spatial.distance.pdist(p)
-    s = cluster.hierarchy.single(dists)
-    f = cluster.hierarchy.fcluster(s, 15, 'distance')
-    cld = defaultdict(list)
-    for i in range(len(f)):
-        cld[f[i]].append(p[i])
-    clv = cld.values()
-    cls = map(lambda arr: (int(mean(array(arr)[:,0])), int(mean(array(arr)[:,1]))), clv)
-    return sorted(list(cls), key = lambda k: [k[1], k[0]])
-
-def augment_points(points):
-    points_shape = list(shape(points))
-    augmented_points = []
-    for row in range(int(points_shape[0] / 11)):
-        start = row * 11
-        end = (row * 11) + 10
-        rw_points = points[start:end + 1]
-        rw_y = []
-        rw_x = []
-        for point in rw_points:
-            x, y = point
-            rw_y.append(y)
-            rw_x.append(x)
-        y_mean = mean(rw_y)
-        for i in range(len(rw_x)):
-            point = (int(rw_x[i]), int(y_mean))
-            augmented_points.append(point)
-    augmented_points = sorted(augmented_points, key=lambda k: [k[1], k[0]])
-    return augmented_points
-
 def FitToGrid(points):
     rowLabels = ckwrap.ckmeans(points.T[1], 11).labels
     rows = [ empty([0, 2]) for i in range(11) ]
