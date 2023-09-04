@@ -1,4 +1,4 @@
-from ai_funcs import iCap, predict, CannyEdges, HoughLine, GridLines, Intersections, ClusterPoints, augment_points, FitToGrid
+from ai_funcs import iCap, predict, CannyEdges, HoughLine, GridLines, Intersections, FitToGrid
 import cv2
 import numpy
 import math
