@@ -1,9 +1,6 @@
 import cv2
-from keras.applications.vgg16 import VGG16, decode_predictions
 from numpy import median, pi, reshape, array, linalg, mean, shape, empty, vstack
 import math
-import scipy.spatial as spatial
-import scipy.cluster as cluster
 from collections import defaultdict
 import ckwrap
 
@@ -39,15 +36,6 @@ def iCap(render = None, cam = 1, interval = 10, change = None):
     finally:
         cv2.destroyAllWindows()
         cap.release()
-
-def predict(frame):
-    image = cv2.resize(frame, (224, 224))
-    image = image.reshape(1, 224, 224, image.shape[2])
-    model = VGG16()
-    p = model.predict(image)
-    label = decode_predictions(p)[0][0][1]
-
-    return label
 
 def CannyEdges(frame, sigma=0.33, blur=5):
     # step 1 gray blur to reduce noise
