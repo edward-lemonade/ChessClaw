@@ -51,11 +51,17 @@ board grid. The end result is very good.
    * use 1d k-means to group the intersections into 11 rows
    * for each role use 1d k-means to group the intersections into 11 columns
    * the average of the group coordinates form rows and columns of the grid
- * Chess piece recognition - Fine tune pre-trained VGG16
-   * VGG16 is a pre-trained neural network model does image labeling
-   * We need to fine-tune the model to recognize each piece and blank spaces
-   * Modifying test.py to generate dataset for training
-   * Once board is detected, each cell is cropped out from the image and manually labeled
+ * Chess piece recognition - Fine tune pre-trained yolov5
+   * Yolov5 is a pre-trained neural network model that does object detection
+   * We need to fine-tune the model to recognize each pieces
+   * Available datasets can be download from universe.roboflow.com
+   * Once board is detected, the image is passed to the model for inference
+
+**Notes**:
+
+Pivoted from using **VGG16** image labeling model to **yolov5** object detection model. The benefits include
+* multiple object detection in one prediction, better performance
+* bounding box are included
 
 ### Test and dataset capture
 
@@ -63,7 +69,7 @@ board grid. The end result is very good.
 python3 -m venv .
 .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-python test.py
+python capture.py
 ```
 You can follow the prompt in the capturing screen to adjust the parameters with
 hot keys such as w/s for changing theta ratio, [] for minLen etc. Press
@@ -75,7 +81,33 @@ until **q** is pressed.
 ### My setup
 ![My setup][1]
 
+### Training with VGG16 (Deprecated)
+
+Open the [chessv.ipynb](./chessv.ipynb) in Jupyter Notebook and run each cell
+to see the output.
+
+**Notes:**
+VSCode has builtin support for Jupyter Notebooks, so you can open the file in
+VSCode directly.
+
+The first phase of training yield below confusion matrix.
+
+![Confusion Matrix][5]
+
+### Training with Yolov5
+
+Open the [chessv-yolov5.ipynb](./chessv-yolov5.ipynb) in JupyterNotebook or
+VSCode to see the output.
+
+Unfortunately, my laptop is not powerful enough to train the median sized
+yolov5m.pt. I had to pivot to use a Google Vertex AI workbench to train with a
+large size yolov5x.pt.
+
+Open the [chessv5-yolov5-workbench.ipynb](.chessv-yolov5-workbench.ipynb) to
+see the training progress.
+
 [1]: images/my_setup.jpg "My Setup"
 [2]: images/sample_canny_edge.jpg
 [3]: images/hough_line.jpg
 [4]: images/k-mean-grid.jpg
+[5]: images/vgg16_confusion_matrix.png "Confusion Matrix"
