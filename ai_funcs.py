@@ -3,34 +3,44 @@ from numpy import median, pi, reshape, array, linalg, mean, shape, empty, vstack
 import math
 from collections import defaultdict
 import ckwrap
+import traceback
+import sys
 
 def iCap(render = None, cam = 1, interval = 10, change = None):
-    cap = cv2.VideoCapture(cam, cv2.CAP_DSHOW)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 4000)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 4000)
+    if type(cam) == int:
+        cap = cv2.VideoCapture(cam, cv2.CAP_DSHOW)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 4000)
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 4000)
+    else:
+        cap = cv2.VideoCapture(cam)
     try:
+        ready = False
         while True:
             ret = None
             success, frame = cap.read()
             if not success:
                 raise Exception(f"failed to read frame from camera {cam}")
-
+            
             if render:
                 try:
                     ret, rendered = render(frame.copy())
-                except:
+                except Exception:
+                    print(traceback.format_exc())
                     rendered = frame
             else:
                 rendered = frame
             cv2.imshow("frame", rendered)
 
             k = cv2.waitKey(interval)
-            if k & 0xFF == ord(' ') and ret is not None:
-                break
+            if k & 0xFF == ord(' '):
+                ready = True
             elif k & 0xFF == ord('q'):
                 return None, None
-            if k and change:
+            elif k and change:
                 change(k)
+
+            if ready and ret is not None:
+                break
 
         return ret, frame
     finally:
@@ -90,4 +100,4 @@ def FitToGrid(points):
         for j in range(11):
             grid[i][j] = clusters[i][j].mean(axis=0)
 
-    return grid
+    return grid.astype(int)
