@@ -106,8 +106,18 @@ large size yolov5x.pt.
 Open the [chessv5-yolov5-workbench.ipynb](.chessv-yolov5-workbench.ipynb) to
 see the training progress.
 
+After downloading the best weights file **best.pt** after about 60 epochs,
+below are some impressive results.
+
+![yolov5 inference][6]
+
+The above captured image was successfully translated into FEN
+
+**4rk2/3n1p2/5Qb1/2P5/2NB4/1p4q1/3P1R2/2K5**
+
 [1]: images/my_setup.jpg "My Setup"
 [2]: images/sample_canny_edge.jpg
 [3]: images/hough_line.jpg
 [4]: images/k-mean-grid.jpg
 [5]: images/vgg16_confusion_matrix.png "Confusion Matrix"
+[6]: images/yolov5_inference2.jpg
