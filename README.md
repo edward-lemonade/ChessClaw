@@ -3,6 +3,8 @@
 This repo captures my journey to build a prototype chess robot, which may be
 turned into a commercial product in the future.
 
+![yolov5][6]
+
 ## What is it?
 
 The robot should
@@ -115,9 +117,21 @@ The above captured image was successfully translated into FEN
 
 **4rk2/3n1p2/5Qb1/2P5/2NB4/1p4q1/3P1R2/2K5**
 
+Run below commands to see the tensor board for the yolov5 training.
+
+```
+cd runs/train/exp2_google
+tensorboard.exe --logdir .
+```
+You should get a URL for the board such as http://localhost:6006/
+
+![yolov5 overall training performance][7]
+
+
 [1]: images/my_setup.jpg "My Setup"
 [2]: images/sample_canny_edge.jpg
 [3]: images/hough_line.jpg
 [4]: images/k-mean-grid.jpg
 [5]: images/vgg16_confusion_matrix.png "Confusion Matrix"
 [6]: images/yolov5_inference2.jpg
+[7]: images/yolov5_training_performance.PNG "Yolov5 Training Performance"
