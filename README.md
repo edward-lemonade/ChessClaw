@@ -28,7 +28,7 @@ battery. The visual sensor can be as simple as a 1080p web cam.
 Everything is easy said than done. I may have to deal with a lot of engineering
 challenges. Some of them are captured below.
 
- * what AI model to use for visual recognition?
+ * What AI model to use for visual recognition?
  * Do I need to fine-tune or train my own AI model?
  * How to convert the recognized board and pieces into something Stockfish can take?
  * What API does Stockfish provide to generate moves?
@@ -48,7 +48,7 @@ board grid. The end result is very good.
 
  * Visual intake: use opencv-python library
  * Board detection:
-   * use canny-edge and hughline algorithm to find the potential grid lines
+   * use canny-edge and houghline algorithm to find the potential grid lines
    * calculate all the intersections
    * use 1d k-means to group the intersections into 11 rows
    * for each role use 1d k-means to group the intersections into 11 columns
@@ -105,7 +105,7 @@ Unfortunately, my laptop is not powerful enough to train the median sized
 yolov5m.pt. I had to pivot to use a Google Vertex AI workbench to train with a
 large size yolov5x.pt.
 
-Open the [chessv5-yolov5-workbench.ipynb](.chessv-yolov5-workbench.ipynb) to
+Open the [chessv5-yolov5-workbench.ipynb](./chessv-yolov5-workbench.ipynb) to
 see the training progress.
 
 After downloading the best weights file **best.pt** after about 60 epochs,
@@ -127,6 +127,11 @@ You should get a URL for the board such as http://localhost:6006/
 
 ![yolov5 overall training performance][7]
 
+## Next Step
+
+ - Keep training the yolov5 model with more dataset
+ - Produce local datasets with [label studio](https://labelstud.io/)
+ - Design robot arm
 
 [1]: images/my_setup.jpg "My Setup"
 [2]: images/sample_canny_edge.jpg
