@@ -12,8 +12,8 @@ MG = 10
 SM = 0.33
 BL = 5
 
-HVX=40
-HVY=5
+HVX=70
+HVY=10
 VVX=10
 VVY=70
 
