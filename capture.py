@@ -9,8 +9,8 @@ TR = 1
 RR = 1
 ML = 140
 MG = 10
-SM = 0.33
-BL = 5
+SM = 0.1
+BL = 3
 
 HVX=70
 HVY=10
@@ -31,10 +31,10 @@ def showGrid(frame):
     points = numpy.array(Intersections(h, v))
     grid = FitToGrid(points)
 
-    # for row in grid:
-    #     for p in row:
-    #         cv2.circle(edges, p, radius=5, color=(64,77,255), thickness=3)
-    # cv2.imshow("edges", edges)
+    for row in grid:
+        for p in row:
+            cv2.circle(edges, p, radius=5, color=(64,77,255), thickness=3)
+    cv2.imshow("edges", cv2.resize(edges, (800, 600)))
 
     # draw the horizontal lines
     for row in grid[1:-1]:
@@ -51,7 +51,7 @@ def showGrid(frame):
         assert v[0] < VVX and v[1] < VVY
         cv2.line(frame, grid[1,col], grid[9,col], color=(64,77,255), thickness=3)
 
-    return grid, frame
+    return grid, cv2.resize(frame, (800, 600))
 
 # load the fine-tuned yolov5 weights.
 model = yolov5.load("best.pt")
@@ -64,7 +64,7 @@ model.multi_label = False  # NMS multiple labels per box
 model.max_det = 40  # maximum number of detections per image
 
 while True:
-    g, pic = iCap(render=showGrid, interval=5, cam=1)
+    g, pic = iCap(render=showGrid, interval=5, cam=0)
     # when space or 'q' is pressed, iCap returns
     if pic is None:
         # 'q' is pressed, iCap return None for the pic, quit
