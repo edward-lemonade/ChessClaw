@@ -67,6 +67,17 @@ Pivoted from using **VGG16** image labeling model to **yolov5** object detection
 
 ### Test and dataset capture
 
+Clone the repo, then make sure you have the **best.pt** file from the yolov5 training in your directory.
+Install the stockfish CLI engine. And setup a **.env** file with following content. Make sure to replace
+the path with your own path where the stockfish engine is installed.
+```
+STOCKFISH_BINARY="C:\Users\username\Tools\stockfish\stockfish-windows-x86-64-avx2.exe"
+STOCKFISH_DEPTH="10"
+STOCKFISH_THREADS="6"
+STOCKFISH_PLAY_AS="w"
+```
+
+Execute below commands.
 ```
 python3 -m venv .
 .venv\Scripts\Activate.ps1
@@ -77,6 +88,11 @@ You can follow the prompt in the capturing screen to adjust the parameters with
 hot keys such as w/s for changing theta ratio, [] for minLen etc. Press
 **space** to capture the frame and start cropping images for each cell. Repeat
 until **q** is pressed.
+
+Press **f** to switch playing as while or black.
+
+The program will display the detected FEN string. Press **space** again to accept the
+detected FEN and show the best move in the next detecting screen.
 
 ![Canny Edge Sample][2] ![hugh_line][3] ![K-Means Gird][4]
 

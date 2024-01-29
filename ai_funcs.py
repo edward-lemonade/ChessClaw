@@ -41,9 +41,10 @@ def iCap(render = None, cam = 1, interval = 10, change = None):
                     ret, rendered = render(frame.copy())
                 except Exception:
                     print(traceback.format_exc())
-                    rendered = frame
+                    rendered = cv2.resize(frame, (800, 600))
+                    cv2.putText(rendered, f"error frame", (0, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (64, 77, 255), 2, 2)
             else:
-                rendered = frame
+                rendered = cv2.resize(frame, (800,600))
             cv2.imshow("frame", rendered)
 
             k = cv2.waitKey(interval)
@@ -84,8 +85,8 @@ def CannyEdges(frame, sigma=0.33, blur=5):
 
     # step 2 gradient calculation
     gradient = median(image)
-    lower = int(max(0, (1.0 - sigma) * gradient))
-    upper = int(min(255, (1.0 + sigma) * gradient))
+    lower = int(max(0, (1.0 - sigma) * gradient) + 10)
+    upper = int(min(255, (1.0 + sigma) * gradient) + 10)
     return image, cv2.Canny(image, lower, upper)
 
 """
